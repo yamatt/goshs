@@ -1,4 +1,4 @@
-![Version](https://img.shields.io/badge/Version-v2.0.6-green)
+![Version](https://img.shields.io/badge/Version-v2.0.7-green)
 [![GitHub](https://img.shields.io/github/license/patrickhener/goshs)](https://github.com/patrickhener/goshs/blob/master/LICENSE)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/patrickhener/goshs)
 [![GitHub issues](https://img.shields.io/github/issues-raw/patrickhener/goshs)](https://github.com/patrickhener/goshs/issues)
@@ -46,7 +46,7 @@ goshs -dns -dns-ip 1.2.3.4 -smtp -smtp-domain your-domain.com
 
 # Documentation
 
-For a detailed documentation go to [goshs.de](https://goshs.de)
+For a detailed documentation go to [docs.goshs.de](https://docs.goshs.de)
 
 # Features
 
@@ -66,7 +66,10 @@ For a detailed documentation go to [goshs.de](https://goshs.de)
 | Method | |
 |---|---|
 | 🦫 **Go** | `go install goshs.de/goshs/v2@latest` |
-| 🐉 **Kali** | `sudo apt install goshs` |
+| 🐉 **Kali & Parrot OS** | `sudo apt install goshs` |
+| 🎗️ **Arch Linux (AUR)** | `yay -S goshs-bin` |
+| 🦎 **openSUSE** | `sudo zypper install goshs` |
+| ❄️ **Nix / NixOS** | `nix-env -iA nixpkgs.goshs` |
 | 🍺 **Homebrew** | `brew install goshs` |
 | 🪟 **Scoop** | `scoop bucket add extras && scoop install extras/goshs` |
 | 🐳 **Docker** | `docker run --rm -it -p 8000:8000 -v "$PWD:/pwd" patrickhener/goshs:latest -d /pwd` |
