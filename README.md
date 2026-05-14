@@ -1,4 +1,4 @@
-![Version](https://img.shields.io/badge/Version-v2.0.7-green)
+![Version](https://img.shields.io/badge/Version-v2.0.8-green)
 [![GitHub](https://img.shields.io/github/license/patrickhener/goshs)](https://github.com/patrickhener/goshs/blob/master/LICENSE)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/patrickhener/goshs)
 [![GitHub issues](https://img.shields.io/github/issues-raw/patrickhener/goshs)](https://github.com/patrickhener/goshs/issues)
@@ -65,15 +65,42 @@ For a detailed documentation go to [docs.goshs.de](https://docs.goshs.de)
 
 | Method | |
 |---|---|
+| 🐧 **curl \| sh** | `curl -sSfL https://goshs.de/install.sh \| sh` |
 | 🦫 **Go** | `go install goshs.de/goshs/v2@latest` |
 | 🐉 **Kali & Parrot OS** | `sudo apt install goshs` |
 | 🎗️ **Arch Linux (AUR)** | `yay -S goshs-bin` |
+| 🖤 **BlackArch** | `pacman -S goshs` |
+| 🏔️ **Alpine Linux (edge)** | `apk add goshs` |
+| 🫙 **Snap** | `snap install goshs` |
+| 🎩 **Fedora / RHEL (COPR)** | `dnf copr enable patrickhener/goshs && dnf install goshs` |
 | 🦎 **openSUSE** | `sudo zypper install goshs` |
 | ❄️ **Nix / NixOS** | `nix-env -iA nixpkgs.goshs` |
 | 🍺 **Homebrew** | `brew install goshs` |
 | 🪟 **Scoop** | `scoop bucket add extras && scoop install extras/goshs` |
+| 🪟 **winget** | `winget install PatrickHener.Goshs` |
+| 🍫 **Chocolatey** | `choco install goshs` |
 | 🐳 **Docker** | `docker run --rm -it -p 8000:8000 -v "$PWD:/pwd" patrickhener/goshs:latest -d /pwd` |
 | 📦 **Release** | [Download from GitHub Releases](https://github.com/patrickhener/goshs/releases) |
+
+<details>
+<summary>🐚 Shell completion</summary>
+
+goshs can install tab completion for bash, fish, and zsh:
+
+```bash
+goshs --completion bash
+goshs --completion fish
+goshs --completion zsh
+```
+
+On macOS with Homebrew the correct Homebrew path is used automatically.
+After installation the command prints an exact activation instruction, e.g.:
+
+```
+source ~/.local/share/bash-completion/completions/goshs
+```
+
+</details>
 
 <details>
 <summary>🔧 Build yourself</summary>
