@@ -1,6 +1,7 @@
 package httpserver
 
 import (
+	"crypto/subtle"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -125,7 +126,7 @@ func (fs *FileServer) doFile(file *os.File, w http.ResponseWriter, req *http.Req
 // Anything else — a browser request from a different origin without a valid
 // token — is rejected.
 func (fs *FileServer) checkCSRF(w http.ResponseWriter, req *http.Request) bool {
-	if req.Header.Get("X-CSRF-Token") == fs.CSRFToken {
+	if subtle.ConstantTimeCompare([]byte(req.Header.Get("X-CSRF-Token")), []byte(fs.CSRFToken)) == 1 {
 		return true
 	}
 
@@ -973,48 +974,38 @@ func (fs *FileServer) ShareHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := r.URL.Query().Get("token")
 
-	fs.sharedLinksMu.RLock()
-	entry, ok := fs.SharedLinks[token]
-	fs.sharedLinksMu.RUnlock()
-
-	if !ok || time.Now().After(entry.Expires) {
-		http.NotFound(w, r)
-		return
-	}
-
-	// Only send if download limit not reached
-	if entry.DownloadLimit > 0 || entry.DownloadLimit == -1 {
-		if entry.IsDir {
-			q := r.URL.Query()
-			q.Set("file", entry.FilePath)
-			q.Set("bulk", "true")
-			r.URL.RawQuery = q.Encode()
-			fs.bulkDownload(w, r)
-		} else {
-			file, err := os.Open(filepath.Join(fs.Webroot, entry.FilePath))
-			if err != nil {
-				logger.Errorf("error opening shared file: %s", entry.FilePath)
-				fs.handleError(w, r, err, http.StatusInternalServerError)
-				return
-			}
-			fs.sendFile(w, r, file, configFile{})
-		}
-	} else {
-		http.NotFound(w, r)
-		return
-	}
-
-	// Update download counter and remove link if limit reached
+	// Consume the download slot atomically before serving to prevent TOCTOU races
 	fs.sharedLinksMu.Lock()
-	if current, exists := fs.SharedLinks[token]; exists {
-		current.Downloaded++
-		if current.DownloadLimit != -1 && current.Downloaded >= current.DownloadLimit {
-			delete(fs.SharedLinks, token)
-		} else {
-			fs.SharedLinks[token] = current
-		}
+	entry, ok := fs.SharedLinks[token]
+	if !ok || time.Now().After(entry.Expires) ||
+		(entry.DownloadLimit != -1 && entry.Downloaded >= entry.DownloadLimit) {
+		fs.sharedLinksMu.Unlock()
+		http.NotFound(w, r)
+		return
+	}
+	entry.Downloaded++
+	if entry.DownloadLimit != -1 && entry.Downloaded >= entry.DownloadLimit {
+		delete(fs.SharedLinks, token)
+	} else {
+		fs.SharedLinks[token] = entry
 	}
 	fs.sharedLinksMu.Unlock()
+
+	if entry.IsDir {
+		q := r.URL.Query()
+		q.Set("file", entry.FilePath)
+		q.Set("bulk", "true")
+		r.URL.RawQuery = q.Encode()
+		fs.bulkDownload(w, r)
+	} else {
+		file, err := os.Open(filepath.Join(fs.Webroot, entry.FilePath))
+		if err != nil {
+			logger.Errorf("error opening shared file: %s", entry.FilePath)
+			fs.handleError(w, r, err, http.StatusInternalServerError)
+			return
+		}
+		fs.sendFile(w, r, file, configFile{})
+	}
 }
 
 // snapshotSharedLinks returns a copy of the SharedLinks map for safe use in
@@ -1118,8 +1109,9 @@ func (fs *FileServer) handleSMTPAttachment(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	safeName := strings.NewReplacer(`\`, `\\`, `"`, `\"`).Replace(a.Filename)
 	w.Header().Set("Content-Type", a.ContentType)
-	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, a.Filename))
+	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, safeName))
 	w.Header().Set("Content-Length", fmt.Sprintf("%d", a.Size))
 	_, err := w.Write(a.Data)
 	if err != nil {

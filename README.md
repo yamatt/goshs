@@ -1,11 +1,10 @@
-![Version](https://img.shields.io/badge/Version-v2.0.9-green)
-[![GitHub](https://img.shields.io/github/license/patrickhener/goshs)](https://github.com/patrickhener/goshs/blob/master/LICENSE)
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/patrickhener/goshs)
-[![GitHub issues](https://img.shields.io/github/issues-raw/patrickhener/goshs)](https://github.com/patrickhener/goshs/issues)
-![goreleaser](https://github.com/patrickhener/goshs/workflows/goreleaser/badge.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/patrickhener/goshs)](https://goreportcard.com/report/github.com/patrickhener/goshs)
-[![codecov](https://codecov.io/gh/patrickhener/goshs/branch/main/graph/badge.svg)](https://codecov.io/gh/patrickhener/goshs)
-[![GitHub stars](https://img.shields.io/github/stars/patrickhener/goshs?style=social)](https://github.com/patrickhener/goshs/stargazers)
+![Version](https://img.shields.io/badge/Version-v2.1.0-green)
+[![GitHub License](https://img.shields.io/github/license/goshs-labs/goshs)](https://github.com/goshs-labs/goshs/blob/main/LICENSE)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/goshs-labs/goshs)
+[![GitHub issues](https://img.shields.io/github/issues-raw/goshs-labs/goshs)](https://github.com/goshs-labs/goshs/issues)
+![goreleaser](https://github.com/goshs-labs/goshs/workflows/goreleaser/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/goshs.de/goshs/v2)](https://goreportcard.com/report/goshs.de/goshs/v2)
+[![codecov](https://codecov.io/gh/goshs-labs/goshs/branch/main/graph/badge.svg)](https://codecov.io/gh/goshs-labs/goshs)
 
 <img src="https://github.com/patrickhener/image-cdn/blob/main/goshs-banner-light.png?raw=true" alt="goshs-logo" height="100">
 
@@ -72,15 +71,15 @@ For a detailed documentation go to [docs.goshs.de](https://docs.goshs.de)
 | 🖤 **BlackArch** | `pacman -S goshs` |
 | 🏔️ **Alpine Linux (edge)** | `apk add goshs` |
 | 🫙 **Snap** | `snap install goshs` |
-| 🎩 **Fedora / RHEL (COPR)** | `dnf copr enable patrickhener/goshs && dnf install goshs` |
+| 🎩 **Fedora / RHEL (COPR)** | `dnf copr enable goshs-labs/goshs && dnf install goshs` |
 | 🦎 **openSUSE** | `sudo zypper install goshs` |
 | ❄️ **Nix / NixOS** | `nix-env -iA nixpkgs.goshs` |
 | 🍺 **Homebrew** | `brew install goshs` |
 | 🪟 **Scoop** | `scoop bucket add extras && scoop install extras/goshs` |
-| 🪟 **winget** | `winget install PatrickHener.Goshs` |
+| 🪟 **winget** | `winget install GoshsLabs.Goshs` |
 | 🍫 **Chocolatey** | `choco install goshs` |
-| 🐳 **Docker** | `docker run --rm -it -p 8000:8000 -v "$PWD:/pwd" patrickhener/goshs:latest -d /pwd` |
-| 📦 **Release** | [Download from GitHub Releases](https://github.com/patrickhener/goshs/releases) |
+| 🐳 **Docker** | `docker run --rm -it -p 8000:8000 -v "$PWD:/pwd" goshs-labs/goshs:latest -d /pwd` |
+| 📦 **Release** | [Download from GitHub Releases](https://github.com/goshs-labs/goshs/releases) |
 
 <details>
 <summary>🐚 Shell completion</summary>
@@ -108,7 +107,7 @@ source ~/.local/share/bash-completion/completions/goshs
 Building requirements are [esbuild](https://github.com/evanw/esbuild) and [sass](https://sass-lang.com/install). After installing these packages run:
 
 ```bash
-git clone https://github.com/patrickhener/goshs.git
+git clone https://github.com/goshs-labs/goshs.git
 cd goshs
 make build-all
 ```
@@ -117,7 +116,7 @@ make build-all
 
 # Code Contributors
 
-[![Contributors](https://contrib.rocks/image?repo=patrickhener/goshs)](https://github.com/patrickhener/goshs/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=goshs-labs/goshs)](https://github.com/goshs-labs/goshs/graphs/contributors)
 
 # Security Contributors
 
@@ -129,6 +128,7 @@ These are the awesome contributors that made `goshs` even more secure :heart:
   <td align="center"><a href="https://github.com/R1ZZG0D"><img src="https://github.com/R1ZZG0D.png?size=50" width="50" height="50"></a></td>
   <td align="center"><a href="https://github.com/jaisurya-me"><img src="https://github.com/jaisurya-me.png?size=50" width="50" height="50"></a></td>
   <td align="center"><a href="https://github.com/offset"><img src="https://github.com/offset.png?size=50" width="50" height="50"></a></td>
+  <td align="center"><a href="https://github.com/black-shadow-007"><img src="https://github.com/black-shadow-007.png?size=50" width="50" height="50"></a></td>
   <td align="center"><a href="https://github.com/wooseokdotkim">wooseokdotkim</a></td>
   <td align="center"><a href="https://github.com/Guilhem7">Guilhem7</a></td>
 </tr></table>
@@ -141,7 +141,7 @@ Join the Discord Community and start connecting.
 
 # Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=patrickhener/goshs&type=date&legend=top-left)](https://www.star-history.com/#patrickhener/goshs&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/svg?repos=goshs-labs/goshs&type=date&legend=top-left)](https://www.star-history.com/#goshs-labs/goshs&type=date&legend=top-left)
 
 # Credits
 

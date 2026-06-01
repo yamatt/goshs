@@ -6,11 +6,11 @@ import (
 	"testing"
 
 	"github.com/miekg/dns"
+	"github.com/stretchr/testify/require"
 	"goshs.de/goshs/v2/clipboard"
 	"goshs.de/goshs/v2/options"
 	"goshs.de/goshs/v2/webhook"
 	"goshs.de/goshs/v2/ws"
-	"github.com/stretchr/testify/require"
 )
 
 func newTestServer() *DNSServer {
@@ -51,14 +51,16 @@ type mockResponseWriter struct {
 	remote  string
 }
 
-func (m *mockResponseWriter) LocalAddr() net.Addr          { return &net.UDPAddr{} }
-func (m *mockResponseWriter) RemoteAddr() net.Addr         { return &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 12345} }
-func (m *mockResponseWriter) WriteMsg(msg *dns.Msg) error  { m.written = msg; return nil }
-func (m *mockResponseWriter) Write(b []byte) (int, error)  { return len(b), nil }
-func (m *mockResponseWriter) Close() error                 { return nil }
-func (m *mockResponseWriter) TsigStatus() error            { return nil }
-func (m *mockResponseWriter) TsigTimersOnly(bool)          {}
-func (m *mockResponseWriter) Hijack()                      {}
+func (m *mockResponseWriter) LocalAddr() net.Addr { return &net.UDPAddr{} }
+func (m *mockResponseWriter) RemoteAddr() net.Addr {
+	return &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 12345}
+}
+func (m *mockResponseWriter) WriteMsg(msg *dns.Msg) error { m.written = msg; return nil }
+func (m *mockResponseWriter) Write(b []byte) (int, error) { return len(b), nil }
+func (m *mockResponseWriter) Close() error                { return nil }
+func (m *mockResponseWriter) TsigStatus() error           { return nil }
+func (m *mockResponseWriter) TsigTimersOnly(bool)         {}
+func (m *mockResponseWriter) Hijack()                     {}
 
 func TestDNSHandler_ARecord(t *testing.T) {
 	s := newTestServer()
@@ -144,18 +146,14 @@ func TestDNSHandler_MultipleQuestions(t *testing.T) {
 }
 
 func TestDNSHandler_ReplyIPFallback(t *testing.T) {
-	// When ReplyIP is empty, it should fall back to the server's IP.
+	// When opts.DNSIP is empty, NewDNSServer should default ReplyIP to "0.0.0.0".
 	cb := clipboard.New()
 	hub := ws.NewHub(cb, false)
 	go hub.Run()
 	wh := webhook.Register(false, "", "discord", []string{})
 
-	s := &DNSServer{
-		IP:      "192.168.0.1",
-		ReplyIP: "", // empty — should fall back to IP
-		Hub:     hub,
-		WebHook: wh,
-	}
+	opts := &options.Options{DNSIP: ""} // empty — constructor should default to 0.0.0.0
+	s := NewDNSServer(opts, hub, wh)
 
 	req := new(dns.Msg)
 	req.SetQuestion("test.local.", dns.TypeA)
@@ -166,5 +164,5 @@ func TestDNSHandler_ReplyIPFallback(t *testing.T) {
 	require.NotNil(t, w.written)
 	require.Len(t, w.written.Answer, 1)
 	a := w.written.Answer[0].(*dns.A)
-	require.Equal(t, "192.168.0.1", a.A.String())
+	require.Equal(t, "0.0.0.0", a.A.String())
 }

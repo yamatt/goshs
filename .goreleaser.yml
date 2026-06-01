@@ -60,17 +60,17 @@ nfpms:
 
 chocolateys:
   - name: goshs
-    owners: patrickhener
+    owners: goshs-labs
     title: goshs
     authors: Patrick Hener
     project_url: https://goshs.de
     icon_url: https://goshs.de/img/favicon.png
     copyright: Patrick Hener
-    license_url: https://github.com/patrickhener/goshs/blob/main/LICENSE
+    license_url: https://github.com/goshs-labs/goshs/blob/main/LICENSE
     require_license_acceptance: false
-    project_source_url: https://github.com/patrickhener/goshs
+    project_source_url: https://github.com/goshs-labs/goshs
     docs_url: https://docs.goshs.de
-    bug_tracker_url: https://github.com/patrickhener/goshs/issues
+    bug_tracker_url: https://github.com/goshs-labs/goshs/issues
     tags: "goshs http server file-sharing pentesting security ctf sysadmin"
     summary: "Beyond Python's http.server — single-binary file server for pentesters"
     description: |
@@ -88,21 +88,21 @@ chocolateys:
         DNS/SMTP out-of-band callbacks, reverse shell catcher, redirect endpoint
       - Tunnel via localhost.run, webhooks, mDNS, IP allowlist, shell completion
       - Self-update: goshs --update
-    release_notes: "https://github.com/patrickhener/goshs/releases/tag/{{ .Tag }}"
+    release_notes: "https://github.com/goshs-labs/goshs/releases/tag/{{ .Tag }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     source_repo: "https://push.chocolatey.org/"
 
 winget:
-  - publisher: PatrickHener
+  - publisher: GoshsLabs
     short_description: Single-binary file server for pentesters and sysadmins
     license: MIT
     publisher_url: https://goshs.de
-    publisher_support_url: https://github.com/patrickhener/goshs/issues
-    package_identifier: PatrickHener.Goshs
-    url_template: "https://github.com/patrickhener/goshs/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    publisher_support_url: https://github.com/goshs-labs/goshs/issues
+    package_identifier: GoshsLabs.Goshs
+    url_template: "https://github.com/goshs-labs/goshs/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
     skip_upload: auto
     repository:
-      owner: patrickhener
+      owner: goshs-labs
       name: winget-pkgs
       branch: "goshs-{{ .Version }}"
       token: "{{ .Env.WINGET_PKGS_TOKEN }}"
