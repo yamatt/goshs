@@ -290,13 +290,30 @@ function fmtHeaders(headers) {
     .join("\n");
 }
 
+// ══ THROTTLED RENDERING ══
+// WS log events (HTTP/DNS/SMB/LDAP/SMTP) can arrive in fast bursts — e.g. a
+// client recursively scanning a hosted folder generates thousands of HTTP
+// events within seconds. Re-rendering the full table (hundreds of rows torn
+// down and rebuilt) on every single event outpaces the browser's GC and
+// balloons memory. Coalesce bursts into at most one render per frame.
+const pendingRenders = new Set();
+function scheduleRender(key, renderFn) {
+  if (pendingRenders.has(key)) return;
+  pendingRenders.add(key);
+  requestAnimationFrame(() => {
+    pendingRenders.delete(key);
+    renderFn();
+  });
+}
+
 // ══ HTTP LOG ══
 function onHTTP(e) {
   ST.httpEvents.unshift(e);
+  if (ST.httpEvents.length > 1000) ST.httpEvents.length = 1000;
   ST.httpCnt++;
   updateBadge("http-badge", ST.httpCnt);
   updateCollabBadge();
-  renderHTTP();
+  scheduleRender("http", renderHTTP);
 }
 
 function methodClass(m) {
@@ -483,6 +500,7 @@ export function clearHTTP() {
 // ══ DNS LOG ══
 function onDNS(e) {
   ST.dnsEvents.unshift(e);
+  if (ST.dnsEvents.length > 1000) ST.dnsEvents.length = 1000;
   ST.dnsCnt.total++;
   if (e.qtype === "A") ST.dnsCnt.A++;
   else if (e.qtype === "MX") ST.dnsCnt.MX++;
@@ -495,7 +513,7 @@ function onDNS(e) {
   updateBadge("dns-cnt-txt", ST.dnsCnt.TXT);
   updateBadge("dns-cnt-other", ST.dnsCnt.other);
   updateCollabBadge();
-  renderDNS();
+  scheduleRender("dns", renderDNS);
 }
 function qtypeClass(t) {
   const map = {
@@ -560,9 +578,10 @@ export function clearDNS() {
 function onSMB(e) {
   console.log(e);
   ST.smbEvents.unshift(e);
+  if (ST.smbEvents.length > 1000) ST.smbEvents.length = 1000;
   updateBadge("smb-badge", ST.smbEvents.length);
   updateCollabBadge();
-  renderSMB();
+  scheduleRender("smb", renderSMB);
 }
 
 export function renderSMB() {
@@ -693,9 +712,10 @@ export function clearSMB() {
 // ══ LDAP Log ══
 function onLDAP(e) {
   ST.ldapEvents.unshift(e);
+  if (ST.ldapEvents.length > 1000) ST.ldapEvents.length = 1000;
   updateBadge("ldap-badge", ST.ldapEvents.length);
   updateCollabBadge();
-  renderLDAP();
+  scheduleRender("ldap", renderLDAP);
 }
 
 export function renderLDAP() {
@@ -871,9 +891,10 @@ export function clearLDAP() {
 // ══ SMTP ══
 function onSMTP(e) {
   ST.smtpEvents.unshift(e);
+  if (ST.smtpEvents.length > 1000) ST.smtpEvents.length = 1000;
   updateBadge("smtp-badge", ST.smtpEvents.length);
   updateCollabBadge();
-  renderSMTP();
+  scheduleRender("smtp", renderSMTP);
 }
 function attachIcon(contentType) {
   if (!contentType) return "";
@@ -1116,7 +1137,7 @@ export function renderSMTP() {
   empty.style.display = vis.length ? "none" : "flex";
   inbox.querySelectorAll(".mail-card").forEach((c) => c.remove());
 
-  vis.forEach((e, i) => {
+  vis.slice(0, 500).forEach((e, i) => {
     inbox.appendChild(buildMailCard(e, i === 0 && !filter));
   });
 }
